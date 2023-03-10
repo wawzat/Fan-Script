@@ -1,0 +1,18 @@
+[Unit]
+#just what it does
+Description= Fan Control Service
+
+[Service]
+#not run by root, but by me
+User=jlucas
+#we assume the full service as active one the script was started
+Type=simple
+#where to find the executable
+ExecStart=/home/jlucas/scripts/fan_control_svc.sh
+#what you want: make sure it always is running
+Restart=always
+
+[Install]
+#which service wants this to run - default.target is just it is loaded by default
+#WantedBy=default.target
+WantedBy=multi-user.target
