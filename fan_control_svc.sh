@@ -23,10 +23,10 @@
 
         #[Service]
         ##Not run by root, but by user
-        #User=jlucas
+        #User=<USERNAME>
         #Type=simple
         ##Location of the executable script
-        #ExecStart=/home/jlucas/scripts/fan_control_svc.sh
+        #ExecStart=/home/USERNAME/scripts/fan_control_svc.sh
         #Restart=always
 
         #[Install]
@@ -37,9 +37,9 @@
         #"systemctl start fan_control.service"
 
     #Check status with "systemctl status fan_control.service"
-    #If the "fan_control_svc.sh" script is changed issue "systemctl restart fan_control.service"
+    #If the "fan_control_svc.sh" script is changed issue "sudo systemctl restart fan_control.service"
 
-source ./config.txt
+source /home/jlucas/scripts/config.txt
 
 #Works with 3 variables, Inlet temp (part 2A)
 #and CPU #1 & #2 temperatures (part 2B)
