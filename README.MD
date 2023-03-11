@@ -25,5 +25,6 @@ Adapted from https://github.com/TheColetrain/IPMI-Script-Dell-r420
     - Place the fan_control_svc.sh file in an appropriate user folder per the path used in the fan_control.service file.
     - Use chmod +x fan_control_svc.sh to make the file executable.
   
-Check status with "systemctl status fan_control.service"
+Check status with "systemctl status fan_control.service"  
+  
 If the "fan_control_svc.sh" script is changed, issue "sudo systemctl restart fan_control.service"
