@@ -5,7 +5,7 @@ Adapted from https://github.com/TheColetrain/IPMI-Script-Dell-r420
 - If temperature is over setpoint set static fan speed or enable/disable dynamic fan control accordingly.
 - Requires IPMITool to be installed
 - IPMItool commands use lanplus across the network. iDRAC does not allow TCP/IP Connection from a server port to the iDRAC Enterprise port unless a VLAN is setup in iDRAC
-- As an alternative I'm running this from a dedicated Ubuntu server VM container on ProxMox on the same server as the IDRAC.
+- As an alternative I'm running this from a dedicated Ubuntu server VM container on ProxMox on the same server as the iDRAC.
   
 - The bash script "fan_control_svc.sh" is intended to be run as a systemd service using the "fan_control.service" service file
 - cron can also be used (without the while loop) but this is better.
@@ -17,7 +17,7 @@ Adapted from https://github.com/TheColetrain/IPMI-Script-Dell-r420
       
  - config_template.txt
     - Rename the file config.txt
-    - Edit the IP address, IDRAC username and IDRAC password.
+    - Edit the IP address, iDRAC username and iDRAC password.
     - Place the config.txt file in an appropriate user folder per the path used in the fan_control.service file.
     
 - fan_control_svc.sh file
