@@ -7,7 +7,7 @@ Adapted from https://github.com/TheColetrain/IPMI-Script-Dell-r420
 - IPMItool commands use lanplus across the network. iDRAC does not allow TCP/IP Connection from a server port to the iDRAC Enterprise port unless a VLAN is setup in iDRAC
 - As an alternative I'm running this from a dedicated Ubuntu server VM container on ProxMox on the same server as the IDRAC.
   
-- The bash script "fan_control_svc.sh" is intended to be run as a systemd service under systemd using the "fan_control.service" service file
+- The bash script "fan_control_svc.sh" is intended to be run as a systemd service using the "fan_control.service" service file
 - cron can also be used (without the while loop) but this is better.
   
 - fan_control.service file
