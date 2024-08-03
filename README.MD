@@ -1,4 +1,4 @@
-# Fan control script for Dell PowerEdge R420
+# Fan control script for Dell PowerEdge R420 and R730 Servers
 
 Adapted from https://github.com/TheColetrain/IPMI-Script-Dell-r420
 - Uses IPMITool to measure temperatures and set fan speeds
