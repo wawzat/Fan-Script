@@ -64,14 +64,6 @@ HIGHTEMP5=$((HIGHTEMP4 - INC))
 HIGHTEMP6=$((HIGHTEMP5 - INC))
 HIGHTEMP7=$((HIGHTEMP6 - INC))
 
-echo HIGHTEMP "$HIGHTEMP" > /dev/console
-echo HIGHTEMP2 "$HIGHTEMP2" > /dev/console
-echo HIGHTEMP3 "$HIGHTEMP3" > /dev/console
-echo HIGHTEMP4 "$HIGHTEMP4" > /dev/console
-echo HIGHTEMP5 "$HIGHTEMP5" > /dev/console
-echo HIGHTEMP6 "$HIGHTEMP6" > /dev/console
-echo HIGHTEMP7 "$HIGHTEMP7" > /dev/console
-
 #### Part 2B
 #Temperature for both CPU's are checked as a safety mechanism in case
 #a CPU is running hotter than the inlet air temp.
@@ -90,23 +82,6 @@ CPU1MAX7=$((CPU1MAX6 - INC))
 CPU2MAX7=$((CPU2MAX6 - INC))
 CPU1MAX8=$((CPU1MAX7 - INC))
 CPU2MAX8=$((CPU2MAX7 - INC))
-
-echo CPU1MAX "$CPU1MAX" > /dev/console
-echo CPU2MAX "$CPU2MAX" > /dev/console
-echo CPU1MAX2 "$CPU1MAX2" > /dev/console
-echo CPU2MAX2 "$CPU2MAX2" > /dev/console
-echo CPU1MAX3 "$CPU1MAX3" > /dev/console
-echo CPU2MAX3 "$CPU2MAX3" > /dev/console
-echo CPU1MAX4 "$CPU1MAX4" > /dev/console
-echo CPU2MAX4 "$CPU2MAX4" > /dev/console
-echo CPU1MAX5 "$CPU1MAX5" > /dev/console
-echo CPU2MAX5 "$CPU2MAX5" > /dev/console
-echo CPU1MAX6 "$CPU1MAX6" > /dev/console
-echo CPU2MAX6 "$CPU2MAX6" > /dev/console
-echo CPU1MAX7 "$CPU1MAX7" > /dev/console
-echo CPU2MAX7 "$CPU2MAX7" > /dev/console
-echo CPU1MAX8 "$CPU1MAX8" > /dev/console
-echo CPU2MAX8 "$CPU2MAX8" > /dev/console
 
 ####Part 3
 
@@ -158,29 +133,23 @@ while ((1)) ; do
         TEMPEXHAUST=`ipmitool -I lanplus -H $IDRACIP -U $IDRACUSER -P $IDRACPASSWORD sdr type temperature \
         | grep "Temp" | cut -d"|" -f5 | cut -d" " -f2 | sed -n 2p` 
     fi
-    TODAY=$(TZ=":US/Pacific" date)
-    echo $TODAY " -- current temperature --" > /dev/console
-    echo INLET AIR TEMP "$TEMPINLET" C > /dev/console
-    if [[ "$SERVERTYPE" == "R730" ]]
-      then 
-        echo EXHAUST AIR TEMP "$TEMPEXHAUST" C > /dev/console
-    fi
-    echo CPU 1 TEMP     "$TEMPCPU1"  C > /dev/console
-    echo CPU 2 TEMP     "$TEMPCPU2"  C > /dev/console
 
     # part 5 - Measure temperatures and set fixed fan speeds or dynamic fan control accordingly. 
+    # Check if any temperature readings are empty
+    if [[ -z "$TEMPINLET" || -z "$TEMPCPU1" || -z "$TEMPCPU2" ]]; then
+        ipmitool -I lanplus -H $IDRACIP -U $IDRACUSER -P $IDRACPASSWORD raw 0x30 0x30 0x01 0x01
+        continue
+    fi
     if [[ "$SERVERTYPE" == "R730" && 
 	  "$TEMPEXHAUST" > "$EXHAUSTMAX" ]]
       then
         ipmitool -I lanplus -H $IDRACIP -U $IDRACUSER -P $IDRACPASSWORD raw 0x30 0x30 0x01 0x01
-        echo "enable dynamic fan control" > /dev/console
 
     elif [[ "$TEMPINLET" > "$HIGHTEMP" ||
           "$TEMPCPU1" > "$CPU1MAX" ||
           "$TEMPCPU2" > "$CPU2MAX" ]]
       then
         ipmitool -I lanplus -H $IDRACIP -U $IDRACUSER -P $IDRACPASSWORD raw 0x30 0x30 0x01 0x01
-        echo "enable dynamic fan control" > /dev/console
 
     #23
     elif [[ "$TEMPINLET" > "$HIGHTEMP2" ||
@@ -189,8 +158,6 @@ while ((1)) ; do
       then
         ipmitool -I lanplus -H $IDRACIP -U $IDRACUSER -P $IDRACPASSWORD raw 0x30 0x30 0x01 0x00
         ipmitool -I lanplus -H $IDRACIP -U $IDRACUSER -P $IDRACPASSWORD raw 0x30 0x30 0x02 0xff "$FS23"
-	decimal_value=$(printf "%d" "$FS23")
-	printf "> set fans to %d%%\n" "$decimal_value" > /dev/console
 
     #22
     elif [[ "$TEMPINLET" > "$HIGHTEMP3" ||
@@ -199,8 +166,6 @@ while ((1)) ; do
       then
         ipmitool -I lanplus -H $IDRACIP -U $IDRACUSER -P $IDRACPASSWORD raw 0x30 0x30 0x01 0x00
         ipmitool -I lanplus -H $IDRACIP -U $IDRACUSER -P $IDRACPASSWORD raw 0x30 0x30 0x02 0xff "$FS22"
-	decimal_value=$(printf "%d" "$FS22")
-	printf "> set fans to %d%%\n" "$decimal_value" > /dev/console
 
     #20
     elif [[ "$TEMPINLET" > "$HIGHTEMP4" ||
@@ -209,8 +174,6 @@ while ((1)) ; do
       then
         ipmitool -I lanplus -H $IDRACIP -U $IDRACUSER -P $IDRACPASSWORD raw 0x30 0x30 0x01 0x00
         ipmitool -I lanplus -H $IDRACIP -U $IDRACUSER -P $IDRACPASSWORD raw 0x30 0x30 0x02 0xff "$FS20"
-	decimal_value=$(printf "%d" "$FS20")
-	printf "> set fans to %d%%\n" "$decimal_value" > /dev/console
 
     #18
     elif [[ "$TEMPINLET" > "$HIGHTEMP5"  ||
@@ -219,8 +182,6 @@ while ((1)) ; do
       then
         ipmitool -I lanplus -H $IDRACIP -U $IDRACUSER -P $IDRACPASSWORD raw 0x30 0x30 0x01 0x00
         ipmitool -I lanplus -H $IDRACIP -U $IDRACUSER -P $IDRACPASSWORD raw 0x30 0x30 0x02 0xff "$FS18"
-	decimal_value=$(printf "%d" "$FS18")
-	printf "> set fans to %d%%\n" "$decimal_value" > /dev/console
 
     #16
     elif [[ "$TEMPINLET" > "$HIGHTEMP6"  ||
@@ -229,8 +190,6 @@ while ((1)) ; do
       then
         ipmitool -I lanplus -H $IDRACIP -U $IDRACUSER -P $IDRACPASSWORD raw 0x30 0x30 0x01 0x00
         ipmitool -I lanplus -H $IDRACIP -U $IDRACUSER -P $IDRACPASSWORD raw 0x30 0x30 0x02 0xff "$FS16"
-	decimal_value=$(printf "%d" "$FS16")
-	printf "> set fans to %d%%\n" "$decimal_value" > /dev/console
 
     #14
     elif [[ "$TEMPINLET" > "$HIGHTEMP7"  ||
@@ -239,8 +198,6 @@ while ((1)) ; do
       then
         ipmitool -I lanplus -H $IDRACIP -U $IDRACUSER -P $IDRACPASSWORD raw 0x30 0x30 0x01 0x00
         ipmitool -I lanplus -H $IDRACIP -U $IDRACUSER -P $IDRACPASSWORD raw 0x30 0x30 0x02 0xff "$FS14"
-	decimal_value=$(printf "%d" "$FS14")
-	printf "> set fans to %d%%\n" "$decimal_value" > /dev/console
 
     #12
     elif [[ "$TEMPINLET" > "$HIGHTEMP8"  ||
@@ -249,16 +206,11 @@ while ((1)) ; do
       then
         ipmitool -I lanplus -H $IDRACIP -U $IDRACUSER -P $IDRACPASSWORD raw 0x30 0x30 0x01 0x00
         ipmitool -I lanplus -H $IDRACIP -U $IDRACUSER -P $IDRACPASSWORD raw 0x30 0x30 0x02 0xff "$FS12"
-	decimal_value=$(printf "%d" "$FS12")
-	printf "> set fans to %d%%\n" "$decimal_value" > /dev/console
 	
     #anything less is 10
     else
         ipmitool -I lanplus -H $IDRACIP -U $IDRACUSER -P $IDRACPASSWORD raw 0x30 0x30 0x01 0x00
         ipmitool -I lanplus -H $IDRACIP -U $IDRACUSER -P $IDRACPASSWORD raw 0x30 0x30 0x02 0xff "$FS10"
-	decimal_value=$(printf "%d" "$FS10")
-	printf "> set fans to %d%%\n" "$decimal_value" > /dev/console
-
     fi
     sleep 15
 done
